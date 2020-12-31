@@ -1,7 +1,7 @@
 import client, { register } from 'prom-client';
 import express, { Express } from 'express';
 import yargs = require('yargs');
-import { TeslaAPI } from 'teslats';
+import { TeslaAPI, VehicleAPI } from 'teslats';
 
 const DEFAULT_HTTP_PORT = 9898;
 const expr: Express = express();
@@ -194,18 +194,7 @@ const metrics = {
   }),
 };
 
-async function reportVehicleData(api: TeslaAPI) {
-  const vehicles = await api.vehicles();
-  if (options.debug) {
-    console.log(
-      'my vehicles: ',
-      vehicles.map(v => v.data)
-    );
-  }
-  // get the first vehicle!
-  const vehicle = vehicles[0];
-  await vehicle.commands.wakeUp();
-  console.log('Vehicle awaken');
+async function reportVehicleData(api: TeslaAPI, vehicle: VehicleAPI) {
   try {
     console.log('Requesting data');
     const vehicleData = await vehicle.vehicleData();
@@ -252,7 +241,15 @@ async function run() {
   console.log(`Exporter listening on port ${options.port}...(press CTRL+c to interrupt)`);
   try {
     const api = new TeslaAPI(options.token);
-    const timeout = setImmediate(async () => await reportVehicleData(api), options.interval * 1000);
+    const vehicles = await api.vehicles();
+    // get the first vehicle!
+    const vehicle = vehicles[0];
+    await vehicle.commands.wakeUp();
+    console.log('Vehicle awaken');
+    const timeout = setInterval(
+      async () => await reportVehicleData(api, vehicle),
+      options.interval * 1000
+    );
 
     return new Promise<void>(resolve => {
       process.stdin.on('keypress', async (str, key) => {
