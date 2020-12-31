@@ -168,7 +168,7 @@ async function run() {
   const api = program.token
     ? new TeslaAPI(program.token)
     : new TeslaAPI(program.username, program.password);
-  const timeout = setInterval(async () => await reportVehicleData(api), program.interval);
+  const timeout = setInterval(async () => await reportVehicleData(api), program.interval * 1000);
 
   return new Promise<void>(resolve => {
     process.stdin.on('keypress', async (str, key) => {
