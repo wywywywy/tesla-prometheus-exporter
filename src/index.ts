@@ -1,6 +1,6 @@
 import client, { register } from 'prom-client';
 import express, { Express } from 'express';
-import { program } from 'commander';
+import yargs = require('yargs');
 import { TeslaAPI } from 'teslats';
 
 const DEFAULT_HTTP_PORT = 9898;
@@ -10,16 +10,25 @@ expr.get('/metrics', (req, res) => {
   res.end(register.metrics());
 });
 
-program
-  .version('1.0.0')
-  .name('prometheus-tesla-exporter')
-  .option('-p, --port', 'Used HTTP port', `${DEFAULT_HTTP_PORT}`)
-  .option('--token', 'Tesla access token')
-  .option('--username', 'Tesla user')
-  .option('--password', 'Tesla password')
-  .option('--interval', 'Frequency of data reporting in seconds', '120')
-  .option('-d, --debug', 'output extra debugging')
-  .parse(process.argv);
+interface ClientOptions {
+  token?: string;
+  username?: string;
+  password?: string;
+  port?: number;
+  interval?: number;
+  debug?: boolean;
+}
+
+const options: ClientOptions & any = yargs
+  .options({
+    token: { alias: 't', description: 'Tesla account API token', demandOption: true },
+    port: { description: 'Used HTTP port', default: DEFAULT_HTTP_PORT },
+    username: { alias: 'u', description: 'Tesla account username', demandOption: false },
+    password: { alias: 'p', description: 'Tesla account password', demandOption: false },
+    interval: { alias: 'i', description: 'Scraping interval in seconds', default: 120 },
+    debug: { alias: 'd', description: 'Debug mode', default: false },
+  })
+  .help().argv;
 
 const metrics = {
   battery_level: new client.Gauge({
@@ -141,35 +150,43 @@ const metrics = {
 
 async function reportVehicleData(api: TeslaAPI) {
   const vehicles = await api.vehicles();
-  console.log('my vehicles: ', vehicles);
+  console.log(
+    'my vehicles: ',
+    vehicles.map(v => v.data)
+  );
   // get the first vehicle!
   const vehicle = vehicles[0];
-  const vehicleData = await vehicle.vehicleData();
-  if (program.debug) {
-    console.log(vehicleData.charge_state);
-  }
+  await vehicle.commands.wakeUp();
+  console.log('Vehicle awaken');
+  try {
+    console.log('Requesting data');
+    const vehicleData = await vehicle.vehicleData();
+    if (options.debug) {
+      console.log(vehicleData.charge_state);
+    }
 
-  Object.keys(metrics).forEach(metric => {
-    metrics[metric].set(
-      {
-        vehicle: vehicleData.display_name,
-      },
-      vehicleData[metric]
-    );
-  });
+    Object.keys(metrics).forEach(metric => {
+      metrics[metric].set(
+        {
+          vehicle: vehicleData.display_name,
+        },
+        vehicleData[metric]
+      );
+    });
+  } catch (e) {
+    console.error(e.message, e);
+  }
 }
 
 async function run() {
-  if (program.debug) {
-    console.log(program.opts());
+  if (options.debug) {
+    console.log(options);
   }
-  const server = expr.listen(program.port);
-  console.log(`Exporter listening on port ${program.port}...(press CTRL+c to interrupt)`);
+  const server = expr.listen(options.port);
+  console.log(`Exporter listening on port ${options.port}...(press CTRL+c to interrupt)`);
   try {
-    const api = program.token
-      ? new TeslaAPI(program.token)
-      : new TeslaAPI(program.username, program.password);
-    const timeout = setInterval(async () => await reportVehicleData(api), program.interval * 1000);
+    const api = new TeslaAPI(options.token);
+    const timeout = setImmediate(async () => await reportVehicleData(api), options.interval * 1000);
 
     return new Promise<void>(resolve => {
       process.stdin.on('keypress', async (str, key) => {
