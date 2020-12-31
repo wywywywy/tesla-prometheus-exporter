@@ -164,24 +164,34 @@ async function run() {
     console.log(program.opts());
   }
   const server = expr.listen(program.port);
-  console.log(`Listening on port ${program.port}...(press CTRL+c to interrupt)`);
-  const api = program.token
-    ? new TeslaAPI(program.token)
-    : new TeslaAPI(program.username, program.password);
-  const timeout = setInterval(async () => await reportVehicleData(api), program.interval * 1000);
+  console.log(`Exporter listening on port ${program.port}...(press CTRL+c to interrupt)`);
+  try {
+    const api = program.token
+      ? new TeslaAPI(program.token)
+      : new TeslaAPI(program.username, program.password);
+    const timeout = setInterval(async () => await reportVehicleData(api), program.interval * 1000);
 
-  return new Promise<void>(resolve => {
-    process.stdin.on('keypress', async (str, key) => {
-      if (key.ctrl && key.name === 'c') {
-        clearInterval(timeout);
-        server.close();
-        resolve();
-      }
+    return new Promise<void>(resolve => {
+      process.stdin.on('keypress', async (str, key) => {
+        if (key.ctrl && key.name === 'c') {
+          clearInterval(timeout);
+          server.close();
+          resolve();
+        }
+      });
     });
-  });
+  } catch (e) {
+    console.error(e.message, e);
+    throw e;
+  }
 }
 
-run().then(() => {
-  console.log('Exiting...');
-  process.exit(0);
-});
+run()
+  .then(() => {
+    console.log('Exiting...');
+    process.exit(0);
+  })
+  .catch(() => {
+    console.log('Exiting...');
+    process.exit(1);
+  });
