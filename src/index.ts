@@ -32,118 +32,118 @@ const options: ClientOptions & any = yargs
 
 const metrics = {
   battery_level: new client.Gauge({
-    name: 'battery_level',
+    name: 'tesla_battery_level',
     help: 'Battery Level',
   }),
 
   battery_range: new client.Gauge({
-    name: 'battery_range',
+    name: 'tesla_battery_range',
     help: 'Battery Range',
   }),
 
   battery_heater_on: new client.Gauge({
-    name: 'battery_heater_on',
+    name: 'tesla_battery_heater_on',
     help: 'Battery Heater status',
   }),
   charge_current_request: new client.Gauge({
-    name: 'charge_current_request',
+    name: 'tesla_charge_current_request',
     help: 'charge current request',
   }),
   charge_current_request_max: new client.Gauge({
-    name: 'charge_current_request_max',
+    name: 'tesla_charge_current_request_max',
     help: 'charge current request max',
   }),
   charge_energy_added: new client.Gauge({
-    name: 'charge_energy_added',
+    name: 'tesla_charge_energy_added',
     help: 'charge energy added',
   }),
   charge_limit_soc: new client.Gauge({
-    name: 'charge_limit_soc',
+    name: 'tesla_charge_limit_soc',
     help: 'charge limit soc',
   }),
   charge_limit_soc_max: new client.Gauge({
-    name: 'charge_limit_soc_max',
+    name: 'tesla_charge_limit_soc_max',
     help: 'charge limit soc max',
   }),
   charge_limit_soc_min: new client.Gauge({
-    name: 'charge_limit_soc_min',
+    name: 'tesla_charge_limit_soc_min',
     help: 'charge limit soc min',
   }),
   charge_limit_soc_std: new client.Gauge({
-    name: 'charge_limit_soc_std',
+    name: 'tesla_charge_limit_soc_std',
     help: 'charge limit soc std',
   }),
   charge_miles_added_ideal: new client.Gauge({
-    name: 'charge_miles_added_ideal',
+    name: 'tesla_charge_miles_added_ideal',
     help: 'charge miles added ideal',
   }),
   charge_miles_added_rated: new client.Gauge({
-    name: 'charge_miles_added_rated',
+    name: 'tesla_charge_miles_added_rated',
     help: 'charge miles added rated',
   }),
   charge_port_door_open: new client.Counter({
-    name: 'charge_port_door_open',
+    name: 'tesla_charge_port_door_open',
     help: 'charge port door open',
   }),
   charge_rate: new client.Gauge({
-    name: 'charge_rate',
+    name: 'tesla_charge_rate',
     help: 'charge_rate',
   }),
   charge_to_max_range: new client.Gauge({
-    name: 'charge_to_max_range',
+    name: 'tesla_charge_to_max_range',
     help: 'charge to max range',
   }),
 
   charger_actual_current: new client.Gauge({
-    name: 'charger_actual_current',
+    name: 'tesla_charger_actual_current',
     help: 'charger actual current',
   }),
   charger_phases: new client.Gauge({
-    name: 'charger_phases',
+    name: 'tesla_charger_phases',
     help: 'charger_phases',
   }),
   charger_pilot_current: new client.Gauge({
-    name: 'charger_pilot_current',
+    name: 'tesla_charger_pilot_current',
     help: 'charger pilot current',
   }),
 
   charger_power: new client.Gauge({
-    name: 'charger_power',
+    name: 'tesla_charger_power',
     help: 'charger_power',
   }),
 
   charger_voltage: new client.Gauge({
-    name: 'charger_voltage',
+    name: 'tesla_charger_voltage',
     help: 'charger_voltage',
   }),
 
   charging_state: new client.Gauge({
-    name: 'charging_state',
+    name: 'tesla_charging_state',
     help: 'charging state',
   }),
 
   est_battery_range: new client.Gauge({
-    name: 'est_battery_range',
+    name: 'tesla_est_battery_range',
     help: 'est battery range',
   }),
   ideal_battery_range: new client.Gauge({
-    name: 'ideal_battery_range',
+    name: 'tesla_ideal_battery_range',
     help: 'ideal battery range',
   }),
   max_range_charge_counter: new client.Gauge({
-    name: 'max_range_charge_counter',
+    name: 'tesla_max_range_charge_counter',
     help: 'max range charge counter',
   }),
   time_to_full_charge: new client.Gauge({
-    name: 'time_to_full_charge',
+    name: 'tesla_time_to_full_charge',
     help: 'time to full charge',
   }),
   timestamp: new client.Gauge({
-    name: 'timestamp',
+    name: 'tesla_timestamp',
     help: 'timestamp',
   }),
   usable_battery_level: new client.Gauge({
-    name: 'usable_battery_level',
+    name: 'tesla_usable_battery_level',
     help: 'usable battery level',
   }),
 };
