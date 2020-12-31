@@ -14,6 +14,7 @@ program
   .version('1.0.0')
   .name('prometheus-tesla-exporter')
   .option('-p, --port', 'Used HTTP port', `${DEFAULT_HTTP_PORT}`)
+  .option('--token', 'Tesla access token')
   .option('--username', 'Tesla user')
   .option('--password', 'Tesla password')
   .option('--interval', 'Frequency of data reporting in seconds', '120')
@@ -164,7 +165,9 @@ async function run() {
   }
   const server = expr.listen(program.port);
   console.log(`Listening on port ${program.port}...(press CTRL+c to interrupt)`);
-  const api = new TeslaAPI(program.username, program.password);
+  const api = program.token
+    ? new TeslaAPI(program.token)
+    : new TeslaAPI(program.username, program.password);
   const timeout = setInterval(async () => await reportVehicleData(api), program.interval);
 
   return new Promise<void>(resolve => {
