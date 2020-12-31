@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowJs": false,
+    "strict": false,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "jsx": "react",
+    "resolveJsonModule": true,
+    "rootDir": "./src"
+  },
+  "lib": ["esnext", "dom", "nodejs"],
+  "include": ["src/"],
+  "exclude": ["**/__tests__/*"]
+}
