@@ -150,10 +150,12 @@ const metrics = {
 
 async function reportVehicleData(api: TeslaAPI) {
   const vehicles = await api.vehicles();
-  console.log(
-    'my vehicles: ',
-    vehicles.map(v => v.data)
-  );
+  if (options.debug) {
+    console.log(
+      'my vehicles: ',
+      vehicles.map(v => v.data)
+    );
+  }
   // get the first vehicle!
   const vehicle = vehicles[0];
   await vehicle.commands.wakeUp();
@@ -166,12 +168,14 @@ async function reportVehicleData(api: TeslaAPI) {
     }
 
     Object.keys(metrics).forEach(metric => {
-      metrics[metric].set(
-        {
-          vehicle: vehicleData.display_name,
-        },
-        vehicleData[metric]
-      );
+      if (vehicleData[metric] !== undefined) {
+        metrics[metric].set(
+          {
+            vehicle: vehicleData.display_name,
+          },
+          vehicleData[metric]
+        );
+      }
     });
   } catch (e) {
     console.error(e.message, e);
