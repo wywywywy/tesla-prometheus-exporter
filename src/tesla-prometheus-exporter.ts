@@ -229,7 +229,7 @@ async function reportVehicleData(api: TeslaAPI, vehicle: VehicleAPI) {
       }
     });
   } catch (e) {
-    console.error(e.message, e);
+    console.error(e.message);
   }
 }
 
@@ -244,8 +244,7 @@ async function run() {
     const vehicles = await api.vehicles();
     // get the first vehicle!
     const vehicle = vehicles[0];
-    await vehicle.commands.wakeUp();
-    console.log('Vehicle awaken');
+    console.log(`Vehicle: ${vehicle.data.display_name}, state ${vehicle.data.state}`);
     const timeout = setInterval(
       async () => await reportVehicleData(api, vehicle),
       options.interval * 1000
@@ -261,7 +260,7 @@ async function run() {
       });
     });
   } catch (e) {
-    console.error(e.message, e);
+    console.error(e.message);
     throw e;
   }
 }
