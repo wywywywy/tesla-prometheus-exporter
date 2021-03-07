@@ -31,6 +31,9 @@
   "bin": {
     "tesla-prometheus-exporter": "./dist/tesla-prometheus-exporter.js"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "express": "^4.17.1",
     "node-fetch": "^2.6.1",
