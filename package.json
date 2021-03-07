@@ -29,7 +29,7 @@
     "node": ">=12.13.0"
   },
   "bin": {
-    "tesla-prometheus-exporter": "./dist/bin/tesla-prometheus-exporter.js"
+    "tesla-prometheus-exporter": "./dist/tesla-prometheus-exporter.js"
   },
   "dependencies": {
     "express": "^4.17.1",
