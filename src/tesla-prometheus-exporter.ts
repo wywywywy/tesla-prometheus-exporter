@@ -11,9 +11,7 @@ expr.get('/metrics', (req, res) => {
 });
 
 interface ClientOptions {
-  token?: string;
-  username?: string;
-  password?: string;
+  token: string;
   port?: number;
   interval?: number;
   vin?: string;
@@ -24,8 +22,6 @@ const options: ClientOptions & any = yargs
   .options({
     token: { alias: 't', description: 'Tesla account API token', demandOption: true },
     port: { description: 'Used HTTP port', default: DEFAULT_HTTP_PORT },
-    username: { alias: 'u', description: 'Tesla account username', demandOption: false },
-    password: { alias: 'p', description: 'Tesla account password', demandOption: false },
     interval: { alias: 'i', description: 'Scraping interval in seconds', default: 120 },
     vin: { description: 'VIN of the car to be monitored' },
     debug: { alias: 'd', description: 'Debug mode', boolean: true, default: false },
