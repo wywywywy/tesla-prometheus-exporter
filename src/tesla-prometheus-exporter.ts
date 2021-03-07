@@ -5,9 +5,9 @@ import { TeslaAPI, Vehicle } from './tesla-api';
 
 const DEFAULT_HTTP_PORT = 9898;
 const expr: Express = express();
-expr.get('/metrics', (req, res) => {
+expr.get('/metrics', async (req, res) => {
   res.set('Content-Type', register.contentType);
-  res.end(register.metrics());
+  res.end(await register.metrics());
 });
 
 interface ClientOptions {
