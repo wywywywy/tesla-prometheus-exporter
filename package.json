@@ -29,7 +29,8 @@
     "node": ">=12.13.0"
   },
   "bin": {
-    "tesla-prometheus-exporter": "./dist/tesla-prometheus-exporter.js"
+    "tesla-prometheus-exporter": "./dist/tesla-prometheus-exporter.js",
+    "tesla": "./dist/bin/tesla.js"
   },
   "files": [
     "dist"

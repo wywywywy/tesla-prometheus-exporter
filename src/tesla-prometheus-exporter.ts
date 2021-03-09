@@ -1,7 +1,8 @@
 import client, { register } from 'prom-client';
 import express, { Express } from 'express';
+import { TeslaAPI } from './tesla-api';
+import { CenterDisplayState, Vehicle } from './types';
 import yargs = require('yargs');
-import { TeslaAPI, Vehicle } from './tesla-api';
 
 const DEFAULT_HTTP_PORT = 9898;
 const expr: Express = express();
@@ -18,12 +19,17 @@ interface ClientOptions {
   debug?: boolean;
 }
 
-const options: ClientOptions & any = yargs
+const options: ClientOptions = yargs
   .options({
-    token: { alias: 't', description: 'Tesla account API token', demandOption: true },
+    token: {
+      alias: 't',
+      description: 'Tesla account API token',
+      type: 'string',
+      demandOption: true,
+    },
     port: { description: 'Used HTTP port', default: DEFAULT_HTTP_PORT },
     interval: { alias: 'i', description: 'Scraping interval in seconds', default: 120 },
-    vin: { description: 'VIN of the car to be monitored' },
+    vin: { description: 'VIN of the car to be monitored', type: 'string' },
     debug: { alias: 'd', description: 'Debug mode', boolean: true, default: false },
   })
   .help().argv;
@@ -208,14 +214,17 @@ const metrics = {
   },
 };
 
-async function reportVehicleData(api: TeslaAPI, vehicle: Vehicle): Promise<boolean> {
+async function reportVehicleData(
+  api: TeslaAPI,
+  vehicle: Vehicle
+): Promise<'asleep' | 'online' | 'off'> {
   try {
     if (vehicle.state !== 'asleep') {
       console.log('Requesting data');
       const vehicleData = await api.data(vehicle.id);
       if (!vehicleData) {
         console.warn(`Cannot read vehicle data for ${vehicle.display_name}`);
-        return false;
+        return 'asleep';
       }
       if (options.debug) {
         console.log(vehicleData);
@@ -254,14 +263,46 @@ async function reportVehicleData(api: TeslaAPI, vehicle: Vehicle): Promise<boole
           }
         });
       });
-      return true;
+      if (vehicleData.vehicle_state.center_display_state === CenterDisplayState.Off) {
+        return 'off';
+      }
+      return 'online';
     } else {
       console.info(`Vehicle ${vehicle.display_name} is ${vehicle.state}, skipping request`);
-      return false;
+      return 'asleep';
     }
   } catch (e) {
     console.error(e.message);
   }
+}
+
+let timeout: NodeJS.Timeout;
+
+function startPolling(vehicleId: number, api: TeslaAPI): void {
+  const ms = options.interval * 1000;
+  let vehicle = null;
+  const callback = async () => {
+    timeout.unref();
+
+    vehicle = vehicle || (await api.vehicle(vehicleId));
+    console.log(`Vehicle: ${vehicle.display_name}, state ${vehicle.state}`);
+    const report = await reportVehicleData(api, vehicle);
+
+    switch (report) {
+      case 'asleep':
+        vehicle = null;
+        timeout = setTimeout(callback, ms);
+        break;
+      case 'online':
+        timeout = setTimeout(callback, ms);
+        break;
+      case 'off':
+        console.log('Sleep tentative');
+        timeout = setTimeout(callback, 15 * 60 * 1000); // 15 minutes of delay
+    }
+  };
+
+  timeout = setTimeout(callback, ms);
 }
 
 async function run() {
@@ -274,21 +315,14 @@ async function run() {
     const api = new TeslaAPI(options.token);
     const vehicles = await api.vehicles();
     // get the selected vehicle or the first one!
-    let vehicle = options.vin ? vehicles.find(v => v.vin === options.vin) : vehicles[0];
+    const vehicle = options.vin ? vehicles.find(v => v.vin === options.vin) : vehicles[0];
     if (vehicle) {
-      console.log(`Vehicle: ${vehicle.display_name}, state ${vehicle.state}`);
-      const ms = options.interval * 1000;
-      const timeout = setInterval(async () => {
-        const report = await reportVehicleData(api, vehicle);
-        if (!report) {
-          vehicle = await api.vehicle(vehicle.id);
-        }
-      }, ms);
+      startPolling(vehicle.id, api);
 
       return new Promise<void>(resolve => {
         process.stdin.on('keypress', async (str, key) => {
           if (key.ctrl && key.name === 'c') {
-            clearInterval(timeout);
+            clearTimeout(timeout);
             server.close();
             resolve();
           }
