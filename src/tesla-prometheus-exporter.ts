@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import client, { register } from 'prom-client';
 import express, { Express } from 'express';
 import { TeslaAPI } from './tesla-api';

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import yargs = require('yargs');
 import { TeslaAPI } from '../tesla-api';
 import { OPTION_CODES } from '../option-codes';
