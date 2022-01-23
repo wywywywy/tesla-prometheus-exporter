@@ -1,16 +1,21 @@
 # tesla-prometheus-exporter
 
-A Prometheus exporter for your tesla car
+A Prometheus exporter for your Tesla.
 
-## Installation
+Originally developed by [madchicken](https://github.com/madchicken/tesla-prometheus-exporter). I have now forked and continued development due to inactivity of the original repository.
 
-    npm i -g tesla-prometheus-exporter
+## Usage
 
-### Usage
+Firstly get a Tesla API token. The easiest way is to use this [utility on the Tesla-info.com website](https://tesla-info.com/tesla-token.php).
 
-    tesla-prometheus-exporter -h
+Then pass the token to the exporter.
 
-### Options
+    npm install
+    npm run serve -- --token=qts-a0123456789
+
+**Docker image & instructions coming soon.**
+
+## Options
 
 Some options can be set as environment variables instead of command line arguments.
 
