@@ -16,5 +16,5 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./
 COPY package*.json ./
 COPY *.md ./
-EXPOSE 9898
+EXPOSE 9885
 CMD [ "node", "tesla-prometheus-exporter.js" ]

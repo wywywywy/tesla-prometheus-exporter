@@ -10,7 +10,7 @@ import { CenterDisplayState, Vehicle } from './types';
 
 dotenv.config();
 
-const DEFAULT_HTTP_PORT = 9898;
+const DEFAULT_HTTP_PORT = 9885;
 const expr: Express = express();
 expr.get('/metrics', async (req, res) => {
   res.set('Content-Type', register.contentType);
