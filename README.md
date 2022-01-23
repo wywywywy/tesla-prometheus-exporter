@@ -13,7 +13,7 @@ Then pass the token to the exporter.
     npm install
     npm run serve -- --token=qts-a0123456789
 
-**Docker image & instructions coming soon.**
+Or if you're using Docker or Kubernetes, set the required environment variables as listed below (at least the `TESLA_EXPORTER_TOKEN`), and simply run the `wywywywy/tesla_exporter` image.
 
 ## Options
 
