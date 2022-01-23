@@ -36,12 +36,15 @@ const options: ClientOptions = yargs
       default: process.env.TESLA_EXPORTER_TOKEN,
     },
     port: {
+      alias: 'p',
       description: 'Used HTTP port',
+      type: 'number',
       default: parseInt(process.env.TESLA_EXPORTER_PORT) || DEFAULT_HTTP_PORT,
     },
     interval: {
       alias: 'i',
       description: 'Scraping interval in seconds',
+      type: 'number',
       default: parseInt(process.env.TESLA_EXPORTER_INTERVAL) || 120,
     },
     vin: {
