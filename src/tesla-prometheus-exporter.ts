@@ -27,11 +27,28 @@ const options: ClientOptions = yargs
       description: 'Tesla account API token',
       type: 'string',
       demandOption: true,
+      default: process.env.TESLA_EXPORTER_TOKEN,
     },
-    port: { description: 'Used HTTP port', default: DEFAULT_HTTP_PORT },
-    interval: { alias: 'i', description: 'Scraping interval in seconds', default: 120 },
-    vin: { description: 'VIN of the car to be monitored', type: 'string' },
-    debug: { alias: 'd', description: 'Debug mode', boolean: true, default: false },
+    port: {
+      description: 'Used HTTP port',
+      default: parseInt(process.env.TESLA_EXPORTER_PORT) || DEFAULT_HTTP_PORT,
+    },
+    interval: {
+      alias: 'i',
+      description: 'Scraping interval in seconds',
+      default: parseInt(process.env.TESLA_EXPORTER_INTERVAL) || 120,
+    },
+    vin: {
+      description: 'VIN of the car to be monitored',
+      type: 'string',
+      default: process.env.TESLA_EXPORTER_VIN,
+    },
+    debug: {
+      alias: 'd',
+      description: 'Debug mode',
+      boolean: true,
+      default: /true/i.test(process.env.TESLA_EXPORTER_DEBUG),
+    },
   })
   .help().argv;
 
@@ -313,6 +330,9 @@ async function run() {
   const server = expr.listen(options.port);
   console.log(`Exporter listening on port ${options.port}...(press CTRL+c to interrupt)`);
   try {
+    if (!options.token) {
+      throw new Error('Token is required');
+    }
     const api = new TeslaAPI(options.token);
     const vehicles = await api.vehicles();
     // get the selected vehicle or the first one!
