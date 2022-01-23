@@ -1,9 +1,14 @@
 #!/usr/bin/env node
+
 import client, { register } from 'prom-client';
 import express, { Express } from 'express';
+import yargs = require('yargs');
+import dotenv from 'dotenv';
+
 import { TeslaAPI } from './tesla-api';
 import { CenterDisplayState, Vehicle } from './types';
-import yargs = require('yargs');
+
+dotenv.config();
 
 const DEFAULT_HTTP_PORT = 9898;
 const expr: Express = express();
