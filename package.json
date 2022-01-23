@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
+    "start": "npm run serve",
     "build": "npm run clean && npm run build:ts",
     "test": "jest --forceExit --coverage --verbose",
     "watch:test": "yarn run test -- --watchAll",
