@@ -225,6 +225,10 @@ async function reportVehicleData(
   vehicle: Vehicle
 ): Promise<'asleep' | 'online' | 'off' | 'error'> {
   try {
+    if (!vehicle) {
+      throw new Error('Vehicle not valid');
+    }
+
     if (vehicle.state !== 'asleep') {
       console.log('Requesting data...');
       const vehicleData = await api.data(vehicle.id);
@@ -291,10 +295,17 @@ function startPolling(vehicleId: number, api: TeslaAPI): void {
   let vehicle = null;
   const callback = async () => {
     timeout.unref();
+    let report: string;
 
-    vehicle = vehicle || (await api.vehicle(vehicleId));
-    console.log(`Vehicle: ${vehicle.display_name} State: ${vehicle.state}`);
-    const report = await reportVehicleData(api, vehicle);
+    try {
+      vehicle = vehicle || (await api.vehicle(vehicleId));
+      console.log(`Vehicle: ${vehicle.display_name} State: ${vehicle.state}`);  
+      report = await reportVehicleData(api, vehicle);
+    } catch (e) {
+      console.error(e.message);
+      vehicle = null;
+      report = 'error';
+    }
 
     errorCount = report === 'error' ? errorCount + 1 : 0;
     if (options.retries > 0 && errorCount >= options.retries) {
@@ -318,6 +329,9 @@ function startPolling(vehicleId: number, api: TeslaAPI): void {
         console.log(`Error, retrying in 15 mins... (${errorCount}/${options.retries})`);
         timeout = setTimeout(callback, 15 * 60 * 1000); // 15 minutes of delay
         break;
+      default:
+        console.error(`Unknown report: ${report}`);
+        process.exit(1);
     }
   };
 
