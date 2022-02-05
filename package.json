@@ -5,6 +5,15 @@
   "main": "dist/tesla-prometheus-exporter.js",
   "repository": "git@github.com:wywywywy/tesla-prometheus-exporter.git",
   "author": "W Leung <wywywywy@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/wywywywy/tesla-prometheus-exporter/issues"
+  },
+  "homepage": "https://github.com/wywywywy/tesla-prometheus-exporter",
+  "keywords": [
+    "tesla",
+    "prometheus",
+    "exporter"
+  ],
   "license": "MIT",
   "private": false,
   "scripts": {
