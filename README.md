@@ -13,7 +13,7 @@ Firstly get a Tesla API token. The easiest way is to use this [utility on the Te
 Then pass the token to the exporter.
 
     # install
-    npm install @wywywywy/tesla-prometheus-exporter
+    npm install -g @wywywywy/tesla-prometheus-exporter
 
     # run
     tesla-prometheus-exporter --token=qts-a0123456789

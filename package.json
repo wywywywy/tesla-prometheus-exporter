@@ -1,6 +1,6 @@
 {
   "name": "@wywywywy/tesla-prometheus-exporter",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Prometheus exporter for Tesla stats",
   "main": "dist/tesla-prometheus-exporter.js",
   "repository": "git@github.com:wywywywy/tesla-prometheus-exporter.git",
