@@ -16,7 +16,7 @@ jobs:
       - run: npm ci --production-only --no-audit
       - run: npm audit fix
       - run: npm run build
-      - run: npm publish
+      - run: npm publish --access public
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
