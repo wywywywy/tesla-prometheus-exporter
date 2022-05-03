@@ -299,7 +299,7 @@ function startPolling(vehicleId: number, api: TeslaAPI): void {
 
     try {
       vehicle = vehicle || (await api.vehicle(vehicleId));
-      console.log(`Vehicle: ${vehicle.display_name} State: ${vehicle.state}`);  
+      console.log(`Vehicle: ${vehicle.display_name} State: ${vehicle.state}`);
       report = await reportVehicleData(api, vehicle);
     } catch (e) {
       console.error(e.message);
@@ -349,6 +349,8 @@ async function run() {
       throw new Error('Token is required');
     }
     const api = new TeslaAPI(options.token);
+    console.log(`Requesting access token from Tesla...`);
+    await api.refreshAccessToken();
     const vehicles = await api.vehicles();
     // get the selected vehicle or the first one!
     const vehicle = options.vin ? vehicles.find(v => v.vin === options.vin) : vehicles[0];
