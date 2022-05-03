@@ -8,7 +8,7 @@ Originally developed by [madchicken](https://github.com/madchicken/tesla-prometh
 
 ## Usage
 
-Firstly get a Tesla API token. The easiest way is to use this [utility on the Tesla-info.com website](https://tesla-info.com/tesla-token.php).
+Firstly get a Tesla API refresh token. The easiest way is to use [this utility on the Tesla-info.com website](https://tesla-info.com/tesla-token.php). Note that since version 2.0.0, it's the **refresh token**, not the access token, that's required.
 
 Then pass the token to the exporter.
 
@@ -21,9 +21,11 @@ Then pass the token to the exporter.
 Or if you're using Docker or Kubernetes, set the required environment variables as listed below (at least the `TESLA_EXPORTER_TOKEN`), and simply run the [wywywywy/tesla_exporter image on Docker Hub](https://hub.docker.com/r/wywywywy/tesla_exporter).
 
     # docker
-    docker run -e TESLA_EXPORTER_TOKEN=qts-a0123456789 wywywywy/tesla_exporter
+    docker run -e TESLA_EXPORTER_TOKEN=eyJa0123456789 wywywywy/tesla_exporter
 
 And then access `http://localhost:9885/metrics`.
+
+Since version 2.0.0, it will try to get a new access token from the provided refresh token once every 24 hours, so you don't have to keep providing new access tokens.
 
 ## Options
 
@@ -32,7 +34,7 @@ Some options can be set as environment variables instead of command line argumen
 | Option | Environment Variable | Description | Notes |
 |---|---|---|---|
 | `--version` | | Show version number | |
-| `--token` | `TESLA_EXPORTER_TOKEN`| Tesla API token | **Required**  |
+| `--token` | `TESLA_EXPORTER_TOKEN`| Tesla API refresh token | **Required**  |
 | `--port` | `TESLA_EXPORTER_PORT`| HTTP port to serve on | Default: **9885**  |
 | `--interval` | `TESLA_EXPORTER_INTERVAL`| Scraping interval in seconds | Default: **120**  |
 | `--vin` | `TESLA_EXPORTER_VIN`| VIN of the car to be monitored | If not provided, the first one will be used  |
