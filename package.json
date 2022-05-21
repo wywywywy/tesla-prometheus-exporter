@@ -1,6 +1,6 @@
 {
   "name": "@wywywywy/tesla-prometheus-exporter",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Prometheus exporter for Tesla stats",
   "main": "dist/tesla-prometheus-exporter.js",
   "repository": "git@github.com:wywywywy/tesla-prometheus-exporter.git",
@@ -40,7 +40,7 @@
   "dependencies": {
     "@types/express": "^4.17.13",
     "@types/jest": "^26.0.0",
-    "@types/node": "^14.18.16",
+    "@types/node": "^14.18.18",
     "@types/node-fetch": "^2.6.1",
     "@types/yargs": "^15.0.12",
     "dotenv": "^14.3.2",
