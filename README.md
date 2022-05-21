@@ -8,7 +8,7 @@ Originally developed by [madchicken](https://github.com/madchicken/tesla-prometh
 
 ## Usage
 
-Firstly get a Tesla API refresh token. The easiest way is to use [this utility on the Tesla-info.com website](https://tesla-info.com/tesla-token.php). Note that since version 2.0.0, it's the **refresh token**, not the access token, that's required.
+Firstly get a Tesla API **refresh token** (not access token). The easiest way is to use [this utility on the Tesla-info.com website](https://tesla-info.com/tesla-token.php). Note that since version 2.0.0, it's the **refresh token**, not the access token, that's required.
 
 Then pass the token to the exporter.
 
@@ -18,14 +18,22 @@ Then pass the token to the exporter.
     # run
     tesla-prometheus-exporter --token=qts-a0123456789
 
-Or if you're using Docker or Kubernetes, set the required environment variables as listed below (at least the `TESLA_EXPORTER_TOKEN`), and simply run the [wywywywy/tesla_exporter image on Docker Hub](https://hub.docker.com/r/wywywywy/tesla_exporter).
+Or if you're using Docker, set the required environment variables as listed below (at least the `TESLA_EXPORTER_TOKEN`), and simply run the [wywywywy/tesla_exporter image on Docker Hub](https://hub.docker.com/r/wywywywy/tesla_exporter).
 
     # docker
-    docker run -e TESLA_EXPORTER_TOKEN=eyJa0123456789 wywywywy/tesla_exporter
+    docker run -e TESLA_EXPORTER_TOKEN=eyJa0123456789 -p 9885:9885 wywywywy/tesla_exporter
 
 And then access `http://localhost:9885/metrics`.
 
-Since version 2.0.0, it will try to get a new access token from the provided refresh token once every 24 hours, so you don't have to keep providing new access tokens.
+Since version 2.0.0, it will try to get a new access token from the provided refresh token once every 7 hours, so you don't have to keep providing new access tokens.
+
+For Docker Compose & Kubernetes deployments, see the `examples` directory.
+
+## Notes
+
+If the car is sleeping, it will **not** attempt to get data from Tesla, as that will wake the car up which is a major battery drain.
+
+If the car is awake, but the screen is off, the exporter will **stop** for 15 mins, in order to not keep the car awake and allow it to go to sleep gracefully.
 
 ## Options
 
