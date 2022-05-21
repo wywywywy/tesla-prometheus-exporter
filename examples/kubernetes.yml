@@ -1,0 +1,82 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tesla-exporter
+stringData:
+  TESLA_EXPORTER_TOKEN: "eyJ123456789"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tesla-exporter
+  name: tesla-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tesla-exporter
+  template:
+    metadata:
+      labels:
+        app: tesla-exporter
+    spec:
+      containers:
+        - image: wywywywy/tesla_exporter:latest
+          name: tesla-exporter
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 500m
+              memory: 200Mi
+          ports:
+            - containerPort: 9885
+              name: tesla-exporter
+          envFrom:
+            - secretRef:
+                name: tesla-exporter
+          readinessProbe:
+            httpGet:
+              port: tesla-exporter
+              path: /metrics
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet:
+              port: tesla-exporter
+              path: /metrics
+            initialDelaySeconds: 10
+            periodSeconds: 60
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tesla-exporter
+spec:
+  selector:
+    app: tesla-exporter
+  ports:
+    - port: 9885
+      name: tesla-exporter
+      targetPort: tesla-exporter
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tesla-exporter
+  annotations:
+    traefik.frontend.rule.type: PathPrefixStrip
+spec:
+  rules:
+    - host: "tesla-exporter.xxxxx.com"
+      http:
+        paths:
+          - path: "/"
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: tesla-exporter
+                port:
+                  name: tesla-exporter

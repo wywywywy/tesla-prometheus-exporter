@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+  tesla_exporter:
+    ports:
+      - '9885:9885'
+    environment:
+      - TESLA_EXPORTER_TOKEN=eyJa0123456789
+    restart: unless-stopped
+    image: wywywywy/tesla_exporter:latest

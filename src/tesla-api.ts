@@ -15,7 +15,7 @@ import {
 const DEFAULT_URI = 'https://owner-api.teslamotors.com/';
 const AUTH_URI = 'https://auth.tesla.com/';
 const USER_AGENT = 'Tesla-Prometheus-Exporter';
-const TOKEN_TIMEOUT_MS = 1000 * 60 * 60 * 24; // 24 hours
+const TOKEN_TIMEOUT_MS = 1000 * 60 * 60 * 7; // 7 hours
 
 export class TeslaAPI {
   private readonly refreshToken: string;
