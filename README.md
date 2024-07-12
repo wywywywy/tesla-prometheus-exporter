@@ -1,3 +1,9 @@
+# !!! DO NOT USE !!!  
+
+THIS DOES NOT WORK ANYMORE, AS TESLA HAS DISABLE THE OWNER API.
+
+WE CANNOT USE THE NEW FLEET API YET, AS IT DOES NOT SUPPORT DEVICE AUTH.
+
 # tesla-prometheus-exporter
 
 A Prometheus exporter for your Tesla vehicle.
